@@ -10,6 +10,7 @@ TagManager:
   - Stairs
   - Ground
   - 2nd Floor
+  - Hand
   layers:
   - Default
   - TransparentFX
@@ -24,8 +25,8 @@ TagManager:
   - Screen
   - Buttons
   - Selection Target
-  - 
-  - 
+  - Menu
+  - ground
   - 
   - 
   - 
