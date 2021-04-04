@@ -21,16 +21,7 @@ public class GameMaster : MonoBehaviour
     // When empathyScore reaches a threshhold, the panels will choose a different array of panels
     // public FactPanelControl factPanelControl;
     // Fact Panel Arrays will be available in factPanelControl script
-
-    [Header("Door Control")]
-    public List<GameObject> doors;
-    // Door status will be attached to each door object
-
-    [Header("Lights")]
-    public List<GameObject> floorLights;
-    public List<GameObject> lights;
-    // Light status will be attached to each light object
-
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -40,6 +31,9 @@ public class GameMaster : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (empathyScore > 5)
+        {
+            empathyLevel = 1;
+        }
     }
 }

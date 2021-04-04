@@ -78,8 +78,9 @@ public class LightSwitch : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Name")
+        if (other.tag == "Hand")
         {
+            GetComponent<AudioSource>().Play();
             lightOn = !lightOn;
         }
     }

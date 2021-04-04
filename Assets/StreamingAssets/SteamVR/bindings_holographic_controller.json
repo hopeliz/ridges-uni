@@ -153,7 +153,7 @@
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/default/in/grabpinch"
+                     "output" : "/actions/default/in/teleport"
                   }
                },
                "mode" : "button",
@@ -232,17 +232,8 @@
             },
             {
                "inputs" : {
-                  "east" : {
-                     "output" : "/actions/default/in/moveright"
-                  },
                   "north" : {
-                     "output" : "/actions/default/in/moveforward"
-                  },
-                  "south" : {
-                     "output" : "/actions/default/in/movebackward"
-                  },
-                  "west" : {
-                     "output" : "/actions/default/in/moveleft"
+                     "output" : "/actions/default/in/teleport"
                   }
                },
                "mode" : "dpad",
@@ -311,8 +302,8 @@
    },
    "category" : "steamvr_input",
    "controller_type" : "holographic_controller",
-   "description" : "Uses joysticks for player movement",
-   "name" : "RidgesVR configuration for Windows Mixed Reality Controller",
+   "description" : "Uses teleportation and rotation",
+   "name" : "Saved RidgesVR with Teleportation configuration for Windows Mixed Reality Controller",
    "options" : {},
    "simulated_actions" : []
 }

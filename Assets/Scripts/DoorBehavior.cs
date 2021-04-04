@@ -8,12 +8,17 @@ using UnityEngine;
 
 public class DoorBehavior : MonoBehaviour
 {
+    [Header("Door Info")]
+    public string doorName = "";
+    public int doorType = 0;
+
     [Header("Door State")]
     public bool doorLocked = false;
     public bool doorClosed = true;
     public bool doorFullyOpen = false;
     public bool doorOpening = false;
     public bool doorClosing = false;
+    public bool doorTried = false;
 
     [Header("Door Limits")]
     //public bool useDoorLimits = true;
@@ -30,6 +35,11 @@ public class DoorBehavior : MonoBehaviour
     public GameObject closePrompts;
     public GameObject lockedPrompts;
 
+    [Header("Audio")]
+    public GameObject openSound;
+    public GameObject closeSound;
+    public GameObject lockedSound;
+
     [Header("Testing Controls")]
     [Tooltip("G for Open, H for Close")]
     public bool useKeyboardControls = false;
@@ -39,8 +49,13 @@ public class DoorBehavior : MonoBehaviour
     {
         if (doorClosed)
         {
-
             doorClosedRotation = transform.localEulerAngles.y;
+
+            // If door is closed and locked, how far it can open does not matter - it can't open
+            if (doorLocked)
+            {
+                doorOpenRotation = doorClosedRotation;
+            }
         }
     }
 
@@ -73,8 +88,18 @@ public class DoorBehavior : MonoBehaviour
 
             if (doorLocked)
             {
-                // Show "locked" prompt
-                lockedPrompts.SetActive(true);
+                // Have the player try the door first to find it locked
+                if (!doorTried)
+                {
+                    // Show "open" prompt
+                    openPrompts.SetActive(true);
+                }
+                else
+                {
+                    // Show "locked" prompt
+                    lockedPrompts.SetActive(true);
+                }
+                
             }
             else
             {
@@ -87,46 +112,6 @@ public class DoorBehavior : MonoBehaviour
             closePrompts.SetActive(false);
             lockedPrompts.SetActive(false);
         }
-
-        /*
-        if (transform.localEulerAngles.y > doorClosedRotation + 1 || transform.localEulerAngles.y < doorClosedRotation - 1)
-        {
-            doorClosed = false;
-        }
-        else
-        {
-            doorClosed = true;
-        }
-        
-
-        if (useDoorLimits)
-        {
-            if (doorOpensClockwise)
-            {
-                if (transform.localEulerAngles.y < doorOpenRotation)
-                {
-                    transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, doorOpenRotation, transform.localEulerAngles.z);
-                }
-
-                if (transform.localEulerAngles.y > doorClosedRotation)
-                {
-                    transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, doorClosedRotation, transform.localEulerAngles.z);
-                }
-            }
-            else
-            {
-                if (transform.localEulerAngles.y > doorOpenRotation)
-                {
-                    transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, doorOpenRotation, transform.localEulerAngles.z);
-                }
-
-                if (transform.localEulerAngles.y < doorClosedRotation)
-                {
-                    transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, doorClosedRotation, transform.localEulerAngles.z);
-                }
-            }
-        }
-        */
 
         if (doorOpening)
         {
@@ -189,15 +174,9 @@ public class DoorBehavior : MonoBehaviour
         // For testing and keyboard control
         if (useKeyboardControls)
         {
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-                OpenDoor();
-            }
+            if (Input.GetKeyDown(KeyCode.G)) { OpenDoor(); }
 
-            if (Input.GetKeyDown(KeyCode.H))
-            {
-                CloseDoor();
-            }
+            if (Input.GetKeyDown(KeyCode.H)) { CloseDoor(); }
         }
     }
 
@@ -211,6 +190,7 @@ public class DoorBehavior : MonoBehaviour
                 {
                     doorClosing = false;
                     doorOpening = true;
+                    openSound.GetComponent<AudioSource>().Play();
                 }
             }
             else
@@ -219,9 +199,17 @@ public class DoorBehavior : MonoBehaviour
                 {
                     doorClosing = false;
                     doorOpening = true;
+                    openSound.GetComponent<AudioSource>().Play();
                 }
             }
         }
+
+        if (doorLocked)
+        {
+            lockedSound.GetComponent<AudioSource>().Play();
+        }
+
+        doorTried = true;
     }
 
     public void CloseDoor()
@@ -233,6 +221,7 @@ public class DoorBehavior : MonoBehaviour
                 doorOpening = false;
                 doorClosing = true;
                 doorFullyOpen = false;
+                closeSound.GetComponent<AudioSource>().Play();
             }
         }
         else
@@ -242,6 +231,7 @@ public class DoorBehavior : MonoBehaviour
                 doorOpening = false;
                 doorClosing = true;
                 doorFullyOpen = false;
+                closeSound.GetComponent<AudioSource>().Play();
             }
         }
     }
@@ -253,6 +243,29 @@ public class DoorBehavior : MonoBehaviour
         if (other.name == "Test Controller")
         {
             print("Test contoller in the house!");
+        }
+
+        if (other.tag == "Hand")
+        {
+            print("My hand is touching " + doorName + " which is type " + doorType + ".");
+
+            /* Add this if pulling the trigger is required for opening the door
+
+            ControllerReference controllerReference = other.gameObject.GetComponentInParent<ControllerReference>();
+            if (controllerReference.GetGrabDown())
+            {
+            */
+            
+                if (doorClosed)
+                {
+                    OpenDoor();
+                }
+
+                if (doorFullyOpen)
+                {
+                    CloseDoor();
+                }
+            //}
         }
 
     }
@@ -279,10 +292,15 @@ public class DoorBehavior : MonoBehaviour
 
         if (other.tag == "Hand")
         {
-            print("My hand is touching");
+            print("My hand is touching " + doorName + " which is type " + doorType + ".");
+
+            /* Add this if pulling the trigger is required for opening the door
+
             ControllerReference controllerReference = other.gameObject.GetComponentInParent<ControllerReference>();
             if (controllerReference.GetGrabDown())
             {
+            */
+            /*
                 if (doorClosed)
                 {
                     OpenDoor();
@@ -292,7 +310,8 @@ public class DoorBehavior : MonoBehaviour
                 {
                     CloseDoor();
                 }
-            }
+               */
+            //}
         }
     }
 }

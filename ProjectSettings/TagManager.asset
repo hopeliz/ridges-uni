@@ -11,6 +11,7 @@ TagManager:
   - Ground
   - 2nd Floor
   - Hand
+  - Door
   layers:
   - Default
   - TransparentFX
@@ -27,8 +28,8 @@ TagManager:
   - Selection Target
   - Menu
   - ground
-  - 
-  - 
+  - Trigger
+  - Lit Screen
   - 
   - 
   - 
